@@ -1,0 +1,107 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://yxarnhngrecg"]
+
+[sub_resource type="Shader" id="Shader_ncjnj"]
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+// --- Outline params ---
+uniform bool enabled = true;
+uniform float thickness : hint_range(0.0, 100.0);
+uniform int ring_count : hint_range(1,128) = 16;
+uniform float ring_offset : hint_range(0.0, 1.0, 0.01);
+uniform vec4 outline_color : source_color;
+uniform bool border_clipping_fix = true;
+uniform float aspect_ratio : hint_range(0.1, 10.0, 0.01) = 1.0;
+uniform bool square_border = false;
+uniform vec2 offset;
+uniform bool max_or_add = false;
+
+// --- Highlight params ---
+uniform vec4 highlight_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform float frequency : hint_range(0.0, 25.0) = 0.35;
+uniform float highlight_speed : hint_range(0.0, 25.0) = 6.0;
+uniform float highlight_width : hint_range(0.0, 50.0) = 15.0;
+
+void vertex(){
+	if (border_clipping_fix){
+		vec2 o = (UV * 2.0 - 1.0);
+		VERTEX += o * thickness - offset;
+		VERTEX.x *= 1.0 + (aspect_ratio-1.0) * (thickness * TEXTURE_PIXEL_SIZE.x) * 2.0;
+	}
+}
+
+vec2 square(float i){
+	i *= 2.0;
+	return (vec2(
+		clamp(abs(mod(i,2.0)-1.0),0.25,0.75),
+		clamp(abs(mod(i+0.5,2.0)-1.0),0.25,0.75)
+		)-0.5)*4.0;
+}
+
+vec4 tex(sampler2D sampler, vec2 uv){
+	vec4 clr;
+	if (uv.x > 0.0 && uv.y > 0.0 && uv.x < 1.0 && uv.y < 1.0){
+		clr = texture(sampler, uv);
+	}else{clr = vec4(0.0);}
+	return clr;
+}
+
+void fragment(){
+	vec2 o = offset / vec2(textureSize(TEXTURE, 0));
+	vec2 uv = UV;
+	uv -= vec2(0.5);
+	if (border_clipping_fix){
+		uv.x *= 1.0 + (aspect_ratio-1.0) * thickness * TEXTURE_PIXEL_SIZE.x * 2.0;
+		uv *= (1.0 + (thickness * TEXTURE_PIXEL_SIZE * 2.0));
+		uv -= o;
+	}
+	uv += vec2(0.5);
+	vec2 size = vec2(thickness) / vec2(textureSize(TEXTURE, 0));
+
+	vec4 sprite_color = tex(TEXTURE, uv);
+
+	float alpha = sprite_color.a;
+	if (square_border){
+		for(int i=0;i<ring_count;++i){
+			float r = float(i) / float(ring_count) + ring_offset;
+			alpha = max(alpha,texture(TEXTURE, uv + o + size * square(r) * vec2(aspect_ratio,1.0)).a * outline_color.a);
+		}
+	}else{
+		for(int i=0;i<ring_count;++i){
+			float r = float(i) * 3.14159 / float(ring_count) * 2.0 + ring_offset;
+			if (max_or_add){
+				alpha = alpha+tex(TEXTURE, uv + o + vec2(size.x * sin(r) * aspect_ratio, size.y * cos(r))).a * outline_color.a;
+			}else{
+				alpha = max(alpha,tex(TEXTURE, uv + o + vec2(size.x * sin(r) * aspect_ratio, size.y * cos(r))).a * outline_color.a);
+			}
+		}
+	}
+
+	// --- Apply outline ---
+	vec3 final_color = mix(outline_color.rgb, sprite_color.rgb, sprite_color.a);
+
+	// --- Apply highlight on top ---
+	float width = 0.001 * frequency * highlight_width / 2.0;
+	float value = floor(sin(frequency * ((uv.x - uv.y) + TIME * highlight_speed)) + width);
+	float highlight = value > 0.5 ? 1.0 : 0.0;
+	final_color = final_color * (1.0 - highlight) + highlight_color.rgb * highlight;
+
+	COLOR = enabled ? vec4(final_color, clamp(alpha, 0.0, 1.0)) : texture(TEXTURE, UV);
+}"
+
+[resource]
+shader = SubResource("Shader_ncjnj")
+shader_parameter/enabled = false
+shader_parameter/thickness = 2.958000140505
+shader_parameter/ring_count = 16
+shader_parameter/ring_offset = 0.0
+shader_parameter/outline_color = Color(1, 0.07058824, 0.07058824, 1)
+shader_parameter/border_clipping_fix = true
+shader_parameter/aspect_ratio = 1.0
+shader_parameter/square_border = false
+shader_parameter/offset = Vector2(0, 0)
+shader_parameter/max_or_add = false
+shader_parameter/highlight_color = Color(1, 0.06999999, 0.06999999, 1)
+shader_parameter/frequency = 0.0
+shader_parameter/highlight_speed = 7.3310003482225
+shader_parameter/highlight_width = 15.0
