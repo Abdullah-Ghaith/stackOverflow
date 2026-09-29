@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://s41jpalass46"]
 
 [ext_resource type="Shader" uid="uid://bsl6bbrlt5g7h" path="res://Util/Common Shaders/dissolve_shader.gdshader" id="1_4nde7"]
-[ext_resource type="Texture2D" uid="uid://dgmbfdv4fp3as" path="res://Assets/AssetPacks/kenney_playing-cards-pack/PNG/Cards (medium)/card_clubs_04.png" id="1_ecew8"]
-[ext_resource type="Script" uid="uid://2ippa8nac3vq" path="res://Util/Classes/BaseCard/base_card.gd" id="1_t7ogw"]
 [ext_resource type="Texture2D" uid="uid://dhxxlwqv7yc0k" path="res://Assets/AssetPacks/kenney_playing-cards-pack/PNG/Cards (medium)/card_back.png" id="3_runfo"]
 [ext_resource type="Shader" uid="uid://b3ri8oaom2fyy" path="res://Util/Common Shaders/2d_perspective.gdshader" id="4_runfo"]
+[ext_resource type="Texture2D" uid="uid://bd6bot78llkou" path="res://Assets/AssetPacks/kenney_playing-cards-pack/PNG/Cards (medium)/color_empty.png" id="5_runfo"]
+[ext_resource type="Script" uid="uid://cc34ppd3v1ua3" path="res://Util/Classes/BaseCard/movement_handling.gd" id="6_10acc"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_runfo"]
 
@@ -22,26 +22,17 @@ shader_parameter/burn_color = Color(2.4049284, 2.0136318, 0.61614364, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_djq5q"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_pdu6s"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4nde7"]
 shader = ExtResource("4_runfo")
-shader_parameter/fov = 92.84800436278
-shader_parameter/cull_back = false
-shader_parameter/y_rot = 0.0
+shader_parameter/fov = 3.000000095
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 8.549999989782009e-06
 shader_parameter/x_rot = 0.0
 shader_parameter/inset = 0.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_t7ogw"]
-size = Vector2(20, 29)
-
 [node name="Card" type="Button" unique_id=1427153514]
 material = SubResource("ShaderMaterial_runfo")
-anchors_preset = -1
-anchor_right = 0.025
-anchor_bottom = 0.038000003
-offset_left = 229.0
-offset_top = 145.0
-offset_right = 201.0
-offset_bottom = 133.95999
+scale = Vector2(4, 4)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_djq5q")
 theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_djq5q")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_djq5q")
@@ -53,17 +44,11 @@ theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_djq5q"
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_djq5q")
 theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_djq5q")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_djq5q")
-script = ExtResource("1_t7ogw")
-angle_x_max = null
-angle_y_max = null
-max_offset_shadow = null
-default_scaling = 6.0
-spring = null
-damp = 30.0
-velocity_multiplier = 1.0
 
 [node name="Shadow" type="TextureRect" parent="." unique_id=819714394]
-self_modulate = Color(0, 0, 0, 0.33333334)
+unique_name_in_owner = true
+modulate = Color(0, 0, 0, 0)
+self_modulate = Color(1, 1, 1, 0.5803922)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -79,23 +64,28 @@ texture = ExtResource("3_runfo")
 stretch_mode = 2
 
 [node name="CardTexture" type="TextureRect" parent="." unique_id=1219372934]
-material = SubResource("ShaderMaterial_pdu6s")
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_4nde7")
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_ecew8")
+texture = ExtResource("5_runfo")
 
-[node name="Area2D" type="Area2D" parent="." unique_id=761515889]
-visible = false
+[node name="MovementHandling" type="Node" parent="." unique_id=1871233858 node_paths=PackedStringArray("base_card")]
+script = ExtResource("6_10acc")
+texture = ExtResource("3_runfo")
+base_card = NodePath("..")
+pickup_scale_mult = 2.0
+spring = null
+damp = null
+velocity_multiplier = null
+follow_frequency = null
+follow_damping_ratio = null
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1960405595]
-unique_name_in_owner = true
-position = Vector2(0, 0.5)
-shape = SubResource("RectangleShape2D_t7ogw")
-
-[connection signal="gui_input" from="." to="." method="_on_gui_input"]
-[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="gui_input" from="." to="MovementHandling" method="_on_gui_input"]
+[connection signal="mouse_entered" from="." to="MovementHandling" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="MovementHandling" method="_on_mouse_exited"]

@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://c7qejucf4mpxn"]
+
+[ext_resource type="PackedScene" uid="uid://s41jpalass46" path="res://Util/Classes/BaseCard/base_card.tscn" id="1_2p83s"]
+[ext_resource type="Texture2D" uid="uid://5f4ng7qmfxd3" path="res://Assets/UI/SingleTick.png" id="2_tnwc7"]
+
+[node name="TickCard" unique_id=1427153514 instance=ExtResource("1_2p83s")]
+
+[node name="MarginContainer" type="MarginContainer" parent="CardTexture" parent_id_path=PackedInt32Array(1219372934) index="0" unique_id=499565315]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -4.5
+offset_top = -10.0
+offset_right = 4.5
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardTexture/MarginContainer" index="0" unique_id=477546649]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CardTexture/MarginContainer/HBoxContainer" index="0" unique_id=881383351]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 9)
+texture = ExtResource("2_tnwc7")
+
+[node name="TextureRect2" type="TextureRect" parent="CardTexture/MarginContainer/HBoxContainer" index="1" unique_id=1162177745]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 9)
+texture = ExtResource("2_tnwc7")
+
+[node name="TextureRect3" type="TextureRect" parent="CardTexture/MarginContainer/HBoxContainer" index="2" unique_id=1947754894]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 9)
+texture = ExtResource("2_tnwc7")

@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://dl1xocp5swidi"]
+
+[ext_resource type="Texture2D" uid="uid://bt527vhhjkj2s" path="res://Assets/AssetPacks/kenney_board-game-icons/Preview.png" id="1_8gbba"]
+[ext_resource type="PackedScene" uid="uid://s41jpalass46" path="res://Util/Classes/BaseCard/base_card.tscn" id="1_jjgbg"]
+[ext_resource type="Texture2D" uid="uid://ciugyxougoiwa" path="res://Assets/AssetPacks/kenney_playing-cards-pack/PNG/Cards (medium)/card_hearts_Q.png" id="3_jjvhh"]
+[ext_resource type="Shader" uid="uid://dacvtgkttf0yr" path="res://Util/Common Shaders/CRT_Shader.gdshader" id="4_jjvhh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kry3j"]
+shader = ExtResource("4_jjvhh")
+shader_parameter/resolution = Vector2(1920, 1080)
+shader_parameter/scan_line_amount = 0.66800003173
+shader_parameter/warp_amount = 0.05
+shader_parameter/vignette_amount = 0.5
+shader_parameter/vignette_intensity = 0.295
+shader_parameter/grille_amount = 0.410000019475
+shader_parameter/brightness_boost = 1.30400001444
+
+[node name="Main" type="Node2D" unique_id=686189621]
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1367998802]
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 918.0
+offset_bottom = 515.0
+texture = ExtResource("1_8gbba")
+
+[node name="Card" parent="." unique_id=1427153514 instance=ExtResource("1_jjgbg")]
+offset_left = 405.0
+offset_top = 187.0
+offset_right = 405.0
+offset_bottom = 187.0
+default_scaling = 5.0
+texture = ExtResource("3_jjvhh")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=946922863]
+
+[node name="CRTRect" type="ColorRect" parent="CanvasLayer" unique_id=215156224]
+material = SubResource("ShaderMaterial_kry3j")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CanvasModulate" type="CanvasModulate" parent="CanvasLayer" unique_id=410544158]
+color = Color(0.8323423, 1, 0.7649893, 1)

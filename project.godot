@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="StackOverflow"
+run/main_scene="uid://dl1xocp5swidi"
 config/features=PackedStringArray("4.8", "Mobile")
 config/icon="res://icon.svg"
 
@@ -51,3 +52,5 @@ textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
 lights_and_shadows/multi_bounce_occlusion/enabled=true
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true
